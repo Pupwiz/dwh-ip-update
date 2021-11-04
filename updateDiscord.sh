@@ -15,5 +15,10 @@ current_ip_address=$(getPublicIp)
 saved_ip_address=$(head ip_address.txt)
 
 if [[ "$current_ip_address" != "$saved_ip_address" ]]; then
-    # TODO: Add the cURL request to update Discord via webhook.
+    rm ip_address.txt
+    ip_address=$(getPublicIp)
+    echo  $ip_address > ip_address.txt
+
+    webhook_url=$(head webhook_url.txt)
+    curl -H "Content-Type: application/json" -d "{\"embeds\": [{ \"title\": \"⚠️ IP Address Updated\", \"description\": \"When connecting to the servers, please use the new IP address below: \n \`\`\` $ip_address \`\`\`\" ,\"color\": 16698189}]}" "$webhook_url"
 fi
